@@ -1,0 +1,22 @@
+<view class="diamond">
+    <view class="top-wrap">
+        <view></view>
+        <view></view>
+    </view>
+
+    <view class="price-wrap">
+        <view></view>
+        <view></view>
+        <view></view>
+    </view>
+
+    <view class="operation-btn">
+        <button>
+            <view></view>
+            <view>行情</view>
+        </button>
+
+        <button>购买</button>
+    </view>
+
+</view>

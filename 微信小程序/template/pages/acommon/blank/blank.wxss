@@ -1,0 +1,45 @@
+.prop-wrap {
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, .3);
+}
+
+.prop-con {
+  position: relative;
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 310rpx; 
+  width: 690rpx;
+  height: 400rpx;
+  background: #fff;
+  border-radius: 4rpx;
+}
+
+.prop-tit {
+  text-align: center;
+  color: #666;
+  line-height: 115rpx;
+}
+
+.prop-info {
+  text-indent: 60rpx;
+  font-size: 24rpx; 
+  padding: 10rpx;
+  box-sizing: border-box;
+  width: 620rpx;
+  height: 140rpx;
+  line-height: 2
+}
+
+.icon {
+  position: absolute;
+  right: 10rpx;
+  top: 10rpx
+}

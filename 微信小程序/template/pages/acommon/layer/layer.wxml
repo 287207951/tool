@@ -1,0 +1,13 @@
+<view class='layer' hidden='{{show}}'>
+  <view class='layer-con'>
+    <view class='tit'>
+      下单提示
+    </view>
+    <image src='/images/order/icon-succeed.png' mode='widthFix' style='width: 186rpx'></image>
+    <view class='info'>恭喜下单成功</view>
+    <view class='bottom'>
+      <button class='btn btn-default'>去查看订单</button>
+      <button class='btn btn-default'>继续下单</button>
+    </view>
+  </view>
+</view>

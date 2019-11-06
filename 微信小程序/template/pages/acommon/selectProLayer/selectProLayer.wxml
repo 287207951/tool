@@ -1,0 +1,22 @@
+<view class='layer' hidden='{{!show}}'>
+  <view class='layer-con'>
+    <scroll-view style='height: 900rpx' scroll-y>
+      <view class='classifly'>
+        <view class='item' wx:key='index' wx:for="{{classList}}" wx:if='{{item}}'>
+          <view class='list-title hr'>
+            <text>{{item.tit === '一级品目' ? '品类' : item.tit}}</text>
+          </view>
+          <view class='list-info' style='padding-bottom: 10rpx'>
+            <view class='list-item {{it.checked && "active"}} {{item.tit === "克重(g)" && "weightClass"}}' data-index='{{index}}' data-ix='{{ix}}' data-it='{{it}}' data-item='{{item}}' wx:for-item="it" wx:for-index="ix" wx:key='code' wx:for="{{item.items}}" bindtap='itemClick'>
+              {{it.value}}
+            </view> 
+          </view>  
+        </view>
+        <cover-view class='bottom'>
+          <button class='btn btn-default rest-btn' catchtap='reset'>重置</button>
+          <button class='btn btn-default confirm-btn' catchtap='goIndex'>确定</button>
+        </cover-view>
+      </view>
+    </scroll-view>
+  </view>
+</view>

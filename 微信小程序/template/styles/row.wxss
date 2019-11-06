@@ -1,0 +1,30 @@
+.row {
+  padding: 0;
+  display: flex;
+  align-items: center;
+  color: #333
+}
+
+.col {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  overflow: hidden;
+  background: #fff
+}
+
+.row .left {
+  display: flex;
+  align-items: center;
+}
+
+.row .left > image {
+  margin-right: 40rpx;
+}
+
+.row .right {
+  display: flex;
+  align-items: center;
+}

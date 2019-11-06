@@ -1,0 +1,86 @@
+.prop-wrap {
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, .3);
+}
+
+.prop-con {
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 310rpx; 
+  width: 690rpx;
+  height: 400rpx;
+  background: #fff;
+  border-radius: 4rpx;
+}
+
+.prop-tit {
+  text-align: center;
+  color: #666;
+  line-height: 115rpx;
+}
+
+.prop-info {
+  font-size: 24rpx; 
+  padding: 10rpx;
+  box-sizing: border-box;
+  width: 620rpx;
+  height: 140rpx;
+  background: #f5f5f5
+}
+
+.pro-btn {
+  display: flex;
+  width: 100%;
+}
+
+.pro-btn .pro-btl {
+  background: #f5f5f5;
+  color: #333
+}
+
+.pro-btr {
+
+}
+
+
+/*按钮  */
+
+.btn {
+  color: #999;
+  background: white;
+  font-size: 28rpx;
+  border: 1px solid #e6e6e6;
+  width: 250rpx;
+  border-radius: 50rpx;
+  text-align: center;
+}
+
+.btn.disabled {
+  color: #999;
+  background: #e6e6e6;
+}
+
+.btn::after {
+  border: none;
+}
+
+.btn:active {
+  opacity: 0.8;
+}
+
+.btn-default {
+  width: 100%;
+  line-height: 88rpx;
+  color: white;
+  border-radius: inherit;
+  background: #a71c20;
+  border: none;
+}

@@ -1,0 +1,14 @@
+
+<view class='screen' >
+  <view wx:for="{{list}}" wx:key="val" data-item='{{item}}' data-index='{{index}}' catchtap='changeTit' >
+    <text class='selectTit {{item.hasTrue && "on"}}'>{{item.text}}</text>
+    <image src='{{item.check? imgSlide.b: imgSlide.a}}' mode='widthFix' style='width: 20rpx'></image>
+  </view> 
+</view>
+
+<view class='info-list' wx:if="{{infoList.check}}">
+  <view data-item='{{item}}' data-index='{{index}}' catchtap='selectTrue' class='row {{item.check && "on"}}' wx:for="{{infoList.childrens}}" wx:key="val" >
+    <text>{{item.text}}</text>
+    <image wx:if="{{item.sort}}" src='{{(item.sort && item.sort.statu) ? sortImgSlide.a: sortImgSlide.b}}' mode='widthFix' style='width: 20rpx'></image>
+  </view>  
+</view>

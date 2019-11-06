@@ -1,0 +1,30 @@
+<view class='tbwrap'>
+  <view class='tbtr' wx:for="{{datasource}}">
+    <view class='tbtd' wx:if="{{item.value}}">{{item.name}}</view>
+    <view class='tbtd' wx:if="{{item.value}}">{{item.value}}</view>
+  </view>
+  <!-- <view class='tbtr'>
+      <view class='tbtd'>下单公司</view>
+      <view class='tbtd'>XS180418001</view>
+    </view>
+    <view class='tbtr'>
+      <view class='tbtd'>下单日期</view>
+      <view class='tbtd'>XS180418001</view>
+    </view>
+    <view class='tbtr'>
+      <view class='tbtd'>回款日期</view>
+      <view class='tbtd'>XS180418001</view>
+    </view>
+    <view class='tbtr'>
+      <view class='tbtd'>字印</view>
+      <view class='tbtd'>XS180418001</view>
+    </view>
+    <view class='tbtr'>
+      <view class='tbtd'>是否挂标签</view>
+      <view class='tbtd'>XS180418001</view>
+    </view>
+    <view class='tbtr'>
+      <view class='tbtd'>备注</view>
+      <view class='tbtd'>XS180418001</view>
+    </view> -->
+</view>

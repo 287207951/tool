@@ -1,0 +1,255 @@
+/*  横向  */
+
+.flex1 {
+  flex: 1;
+}
+
+.f {
+  display: flex;
+}
+
+.fw {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.fa {
+  display: flex;
+  justify-content: space-around;
+}
+
+.fb {
+  display: flex;
+  justify-content: space-between;
+}
+
+.fend {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.fs {
+  display: flex;
+  align-items: center;
+}
+
+.fc {
+  display: flex;
+  justify-content: center;
+}
+
+.fr {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 横线 */
+/* 
+.hr {
+  border-bottom: 1px solid #eee;
+} */
+
+/* mt */
+
+.mt10 {
+  margin-top: 10rpx;
+}
+
+.mt20 {
+  margin-top: 20rpx;
+}
+
+.mt40 {
+  margin-top: 40rpx;
+}
+
+/* mb */
+
+.mb10 {
+  margin-bottom: 10rpx;
+}
+
+.mb20 {
+  margin-bottom: 20rpx;
+}
+
+.mb40 {
+  margin-bottom: 40rpx;
+}
+
+/* ml */
+
+.ml10 {
+  margin-left: 20rpx;
+}
+
+.ml20 {
+  margin-left: 20rpx;
+}
+
+.ml30 {
+  margin-left: 30rpx;
+}
+
+.ml40 {
+  margin-left: 40rpx;
+}
+
+/* mr */
+
+.mr10 {
+  margin-right: 10rpx;
+}
+
+.mr20 {
+  margin-right: 20rpx;
+}
+
+.mr30 {
+  margin-right: 30rpx;
+}
+
+.mr40 {
+  margin-right: 40rpx;
+}
+
+/* pt */
+
+.pt10 {
+  padding-top: 10rpx;
+}
+
+.pt20 {
+  padding-top: 20rpx;
+}
+
+.pt40 {
+  padding-top: 40rpx;
+}
+
+/* pb */
+
+.pb10 {
+  padding-bottom: 10rpx;
+}
+
+.pb20 {
+  padding-bottom: 20rpx;
+}
+
+.pb40 {
+  padding-bottom: 40rpx;
+}
+
+.ml10 {
+  padding-bottom: 10rpx;
+}
+
+/* 字号 */
+
+.f18 {
+  font-size: 18rpx;
+}
+
+.f20 {
+  font-size: 20rpx;
+}
+
+.f22 {
+  font-size: 22rpx;
+}
+
+.f24 {
+  font-size: 24rpx;
+}
+
+.f28 {
+  font-size: 28rpx;
+}
+
+.f32 {
+  font-size: 32rpx;
+}
+
+.f36 {
+  font-size: 36rpx;
+}
+
+.f40 {
+  font-size: 40rpx;
+}
+
+.fbold {
+  font-weight: bold;
+}
+
+.cursor:hover {
+  cursor: pointer;
+}
+
+.c9 {
+  color: #999
+}
+
+.c6 {
+  color: #666
+}
+
+.c3 {
+  color: #333
+}
+
+
+/* 文字溢出 */
+
+.overflow {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.overflows {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+
+/* 文字中间横线  */
+
+.hr {
+  position: relative;
+  text-align: center;
+}
+
+.hr text {
+  z-index: 1;
+  position: relative;
+  padding: 0 30rpx;
+  background: white;
+}
+
+.hr::after {
+  position: absolute;
+  content: '';
+  display: block;
+  height: 1px;
+  background: #e6e6e6;
+  top: 50%;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio:2){
+    .hr::after{
+        transform: scaleY(0.5);
+    }
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio:3){
+    .hr::after{
+        transform: scaleY(0.33);
+    }
+}

@@ -1,0 +1,16 @@
+<view class='prop-wrap' hidden='{{!defProp}}' catchtouchmove='func'>
+  <form bindsubmit="formSubmit" bindreset="formReset">
+    <view class='prop-con'>
+      <view>
+        <view class='prop-tit'>{{tit}}</view>
+        <view class='prop-content'>
+          <slot></slot> 
+        </view>
+      </view> 
+      <view class='pro-btn'>
+        <button form-type='reset' class='pro-btl btn btn-default'>{{cancel}}</button>
+        <button formType="submit" class='pro-btr btn btn-default'>{{confirm}}</button>
+      </view>
+    </view>
+  </form>
+</view> 

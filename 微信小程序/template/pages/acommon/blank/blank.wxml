@@ -1,0 +1,11 @@
+<view class='prop-wrap' hidden='{{!blankStatus}}' catchtap='slideBlank'>
+  <view class='prop-con'>
+    <icon class='icon' type="cancel" size="20" color="#aaa"/>
+    <view>
+      <view class='prop-tit'>{{blankTit}}</view>
+      <view class='prop-info'>
+        {{blankInfo}}
+      </view>
+    </view> 
+  </view>
+</view>

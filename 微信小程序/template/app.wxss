@@ -1,0 +1,108 @@
+@import '/styles/btn.wxss';
+@import '/styles/utils.wxss';
+@import '/styles/loadMore.wxss';
+@import '/styles/row.wxss';
+
+page {
+  font-family: -apple-system,
+                 BlinkMacSystemFont,
+                 "PingFang SC",
+                 "Helvetica Neue",
+                 STHeiti,
+                 "Microsoft Yahei",
+                 Tahoma,
+                 Simsun,
+                 sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-size: 28rpx;
+  color: #333;
+  background: #f5f5f5;
+}
+
+/* 标签  */
+
+.batar-tag {
+  padding: 6rpx;
+  margin-left: 40rpx;
+  font-size: 18rpx;
+  color: #a71c20;
+  border: 1px solid #a71c20;
+  border-radius: 4rpx;
+}
+
+.batar-tag:active {
+  opacity: 0.8;
+}
+
+/* 文字开头点  */
+
+.dot {
+  position: relative;
+}
+
+.dot::before {
+  content: '·';
+  color: #666;
+  position: absolute;
+  left: -18rpx;
+}
+
+/* 右上角数量  */
+
+.badge {
+  position: absolute;
+  right: 8rpx;
+  top: 22rpx;
+  font-size: 18rpx;
+  color: #fff;
+  background: #a71c20;
+  border: 1px solid #fff;
+  padding: 0 0.3em;
+  border-radius: 14rpx;
+  line-height: 1.2;
+}
+
+.badge-active {
+  position: absolute;
+  right: 8rpx;
+  top: 22rpx;
+  font-size: 18rpx;
+  color: #a71c20;
+  background: #fff;
+  border: 1px solid #a71c20;
+  padding: 0 0.2em;
+  border-radius: 14rpx;
+  line-height: 1.2;
+}
+
+/* 默认placeholder样式  */
+
+.def-place {
+  color: #999;
+}
+
+.small-place {
+  color: #999;
+  font-size: 24rpx;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  color: transparent;
+}
+
+image {
+  object-fit: cover;
+}
+
+.bor1 {
+  position: absolute;
+  content: '';
+  width: 100%;
+  left: 0;
+  height: 1px;
+  background: #e3e5e9;
+  transform: scale(1, 0.5);
+  transform-origin: center bottom;
+}

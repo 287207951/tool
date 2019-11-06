@@ -1,0 +1,31 @@
+<view class='prop-wrap' hidden='{{!defProp}}'>
+  <form >
+    <view class='prop-con'>
+      <view class='prop-tit'>{{tit}}</view>
+      <view class='prop-info'>
+        <view class='bt-list bt-date'>
+          <view>预计来款日期</view>
+          <picker mode="date" value="{{date}}" bindchange="startDateEv">
+            <view class="picker">
+              {{startDate}}
+              <image src='/images/order/icon-date.png' mode='widthFix' style='width: 30rpx'></image>
+            </view>
+          </picker>
+        </view>
+        <view class='bt-list bt-date'>
+          <view>预计到货日期</view>
+          <picker mode="date" value="{{date}}" bindchange="endDateEv">
+            <view class="picker">
+              {{endDate}}
+              <image src='/images/order/icon-date.png' mode='widthFix' style='width: 30rpx'></image>
+            </view>
+          </picker>
+        </view>
+      </view>
+      <view class='pro-btn'>
+        <button catchtap='formReset' class='pro-btl btn btn-default'>取消</button>
+        <button catchtap='formSubmit' class='pro-btr btn btn-default'>{{confirm}}</button>
+      </view>
+    </view>
+  </form>
+</view>
