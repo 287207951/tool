@@ -1,0 +1,38 @@
+@import "@styles/theme.scss";
+
+.user-menu {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  background: #fff;
+}
+
+.user-menu__item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 33.3%;
+  height: 180px;
+  @include border(right bottom, 1px, solid, rgba(0, 0, 0, .15));
+
+  &-img {
+    width: 52px;
+    height: 52px;
+  }
+
+  &-txt {
+    margin-top: 16px;
+    color: #333;
+    font-size: 24px;
+    line-height: 24px;
+  }
+
+  &--nth {
+    border-right-width: 0;
+  }
+
+  &--last {
+    border-bottom-width: 0;
+  }
+}

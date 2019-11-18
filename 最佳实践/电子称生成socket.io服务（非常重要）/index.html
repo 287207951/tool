@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>串口配置工具</title>
+    
+    <script src='../js/jquery-1.9.1.js' type='text/javascript'></script>
+    <script src='/socket.io/socket.io.js'></script>
+    <link rel='stylesheet' type="text/css" href='../css/bootstrap.min.css'>
+    <script type="text/javascript">
+        //打开串口
+        function post_serial_info() {
+            com_num = $("#com_num").find("option:selected").val();//获取串口号
+            baudrate = $("#baudrate").find('option:selected').val();//获取波特率
+            databits = $("#databits").find('option:selected').val();//获取数据位
+            stopbits = $("#stopbits").find('option:selected').val();//获取停止位
+            parity = $("#parity").find('option:selected').val();//获取校验位字节数
+            var serial_info = {
+                com_num: com_num,
+                baudrate: baudrate,
+                databits: databits,
+                stopbits: stopbits,
+                parity: parity,
+                serial_flag: serial_flag
+            }
+            var JSON_serial = JSON.stringify(serial_info); 
+            connect_toserver.emit('serial_info', serial_info);   //发送 serial_info事件
+        }
+    </script>
+    <script type="text/javascript">
+        function post_info(command) {
+            if (auto_time < 100 && auto_send == 'auto_send_yes') {
+                alert('定时发送间隔时间不能小于100ms');
+                return false;
+            }
+            var data = {
+                auto_time: auto_time,
+                auto_send: auto_send,
+                command: command,
+                rec_setting: rec_setting,
+                send_setting: send_setting
+            };
+            
+            var JSON_data = JSON.stringify(data); 
+            connect_toserver.emit('meterReading', data);   //发送 meterReading事件
+        }
+    </script>
+    <script type="text/javascript">
+        var serial_flag = "close";           //串口状态标志位
+        function bnt_change(obj) {
+            if (obj.value == "打开串口") {
+                obj.value = "关闭串口";  
+                serial_flag = "open";
+                post_serial_info();
+            }
+            else {
+                obj.value = "打开串口";
+                serial_flag = "close";
+                post_serial_info();   
+            }
+        }
+    </script>
+    <script type="text/javascript">
+        $(function()
+        {
+            $('#set_change').click(function()
+            {
+                rec_setting = $("#rec_setting").find('option:selected').val();
+                send_setting = $("#send_setting").find('option:selected').val();
+                var encode_set = {
+                    rec_setting: rec_setting,
+                    send_setting: send_setting
+                };
+                var JSON_encode = JSON.stringify(encode_set); 
+                connect_toserver.emit('encode_setting', encode_set);
+            })
+        });
+
+    </script>
+    <script>
+        var connect_toserver = io.connect("localhost:2212");
+        $(function () { 
+            $("#btn_start").click(function meterReading() {
+
+                auto_time = $("#auto_time").val();//获取发送间隔时间
+                auto_send = $("#auto_send").find('option:selected').val();//获取是否自动发送标志位
+                command = document.getElementById('command').value;   //获取指令
+                rec_setting = $("#rec_setting").find('option:selected').val();//获取接收编码
+                send_setting = $("#send_setting").find('option:selected').val();//获取发送编码
+
+                if (command == "") {
+                    alert("请输入发送指令");
+                }
+                else if (serial_flag == "close") {
+                    alert("请先打开串口");
+                }
+                else if ((auto_send == "auto_send_yes") && (auto_time == "")) {
+                    alert("请输入定时发送的时间");
+                }
+                else {
+                    post_info(command);
+                }
+            });
+
+            $(".tab-pane").on("click", ".sends", function () {
+                auto_time = $("#auto_time").val();//获取发送间隔时间
+                auto_send = $("#auto_send").find('option:selected').val();//获取是否自动发送标志位
+                rec_setting = $("#rec_setting").find('option:selected').val();//获取接收编码
+                send_setting = $("#send_setting").find('option:selected').val();//获取发送编码
+
+                var type = $(this).attr("data-type");
+                var data = $(this).attr("data");
+                if (type == 'u') {//设置
+                    var key = $(this).attr('for');
+                    var select = $("#" + key).next("select").val();
+                    if(select) {
+                        data = data + $("#" + key).val() + ',"'+select+'"';
+                    }else{
+                        data = data + $("#" + key).val();
+                    }
+                }
+                if (serial_flag == "close") {
+                    alert("请先打开串口");
+                } else {
+                    post_info(data);
+                }
+            })
+
+        });
+    </script>
+    <script type="text/javascript">
+        //接收串口数据，显示
+
+        connect_toserver.on('data_to_web', function (data) {
+            var rec_setting = $("#rec_setting").find('option:selected').val();//获取接收编码
+            var message = document.getElementById('message');
+            // console.log(typeof parseFloat(data) === 'NaN')
+
+            if (rec_setting == 'hex') {
+                message.innerHTML += data.toLocaleUpperCase() + '<br/><br/>';
+                message.scrollTop = message.scrollHeight;
+            }
+            else {
+               message.innerHTML +=  data + '<br/><br/>';
+                message.scrollTop = message.scrollHeight;
+            }
+            // if(typeof data === 'string'){
+            //     let inpNum = parseFloat(data)
+            //     console.log(inpNum)
+            //     $('#inpOne').val(inpNum)
+            //     Cookies.set('inpNum', inpNum)
+            //     // localStorage.inpNum = inpNum;
+            //     sessionStorage.setItem("inpNum",inpNum);
+            //     var remoteStorage = new YYPAY.XDStorage("http://localhost:2212", "http://localhost:8079");  
+            //     remoteStorage.getValue(this.key,function(key,value){  
+            //         console.log(value);  
+            //     });  
+            // }
+        })
+        function clear_window() {
+            $('#message').empty();  //清空所有数据信息
+        }
+        const Cookies = {
+            _cookies: {},
+            keyTest (key) {
+                if (!key) {
+                console.error('key不能为空')
+                return true
+                }
+                if (/(?:[`~!@#%^&*()-=+])/.test(key)) {
+                console.error('key不能有`~!@#%^&*()-=+字符')
+                return true
+                }
+                if (/^(?:path|domain|secure|expires|max-age)$/.test(key)) {
+                console.error('key不能为path|domain|secure|expires|maxAge')
+                return true
+                }
+                return false
+            },
+            valTest (val) {
+                if (/(?:[;])/.test(val)) {
+                console.error('val不能有;字符')
+                return true
+                }
+                return false
+            },
+            endTest (end) {
+                if (/^(0|-?[1-9]\d*)$/.test(end)) {
+                return 'number'
+                } else if (/^(?:[\d]+[Y|M|D|h|m|s])$/.test(end)) {
+                return 'scheme'
+                }
+                console.error('end格式错识,Number默认秒|String默认秒,例:100Y=100年,Y:1年/365天,M:1月/30天,D:天,H:小时,m:分钟,s:秒')
+                return false
+            },
+            typeTest (val, type) {
+                if (!/^string$/.test(typeof type)) {
+                console.error('type必须为string')
+                return true
+                }
+                if (!/^boolean|null|undefined|number|string|symbol|object$/.test(type)) {
+                console.error('只能判断boolean|null|undefined|number|string|symbol|object类型')
+                return true
+                }
+                // eslint-disable-next-line valid-typeof
+                if (typeof val === type) {
+                return false
+                }
+                return true
+            },
+            set (
+                key = '',
+                val = '',
+                end = '100Y',
+                path = '',
+                domain = '',
+                secure = false
+            ) {
+                if (this.typeTest(key, 'string')) {
+                console.error('key必须为string')
+                return false
+                }
+                if (this.typeTest(val, 'string') && this.typeTest(val, 'number') && this.typeTest(val, 'boolean')) {
+                console.error('val必须为string|number|boolean')
+                return false
+                }
+                if (this.typeTest(end, 'string') && this.typeTest(end, 'number')) {
+                console.error('end必须为string|number')
+                return false
+                }
+                if (this.typeTest(path, 'string')) {
+                console.error('path必须为string')
+                return false
+                }
+                if (this.typeTest(domain, 'string')) {
+                console.error('domain必须为string')
+                return false
+                }
+                if (this.typeTest(secure, 'boolean')) {
+                console.error('secure必须为boolean')
+                return false
+                }
+
+                key = this.trim(key)
+                val = this.trim(val.toString())
+                end = this.trim(end.toString())
+                path = this.trim(path)
+                domain = this.trim(domain)
+
+                if (this.keyTest(key)) return false
+                if (this.valTest(val)) return false
+                let NorS = this.endTest(end)
+                if (!NorS) return false
+
+                let _end = ''
+
+                if (NorS === 'number') {
+                _end = ';max-age=' + end
+                }
+                if (NorS === 'scheme') {
+                _end = ';expires=' + this.getUTCString(end)
+                }
+
+                let _path = path && ';domain=' + path
+                let _domain = domain && ';domain=' + domain
+                let _secure = secure ? ';secure' : ''
+
+                let _ck = `${key}=${val}${_end}${_path}${_domain}${_secure}`
+                document.cookie = _ck
+            },
+            get (key) {
+                if (this.keyTest(key) || !this.hasKey(key)) return false
+                // return (document.cookie.replace(new RegExp(`(?:^|;\\s)(?:${key}=)([^;]*)(?:$|;\\s)`), '$1') || false)
+                return (document.cookie.replace(new RegExp(`(?:.*${key}=([^;]*)(?:;.*|$))`), '$1') || false)
+            },
+            clear (key) {
+                if (this.keyTest(key) || !this.hasKey(key)) return false
+                this.set(key, '', -1)
+            },
+            getUTCString (time) {
+                const Times = {
+                Y: 1000 * 60 * 60 * 24 * 365,
+                M: 1000 * 60 * 60 * 24 * 30,
+                D: 1000 * 60 * 60 * 24,
+                h: 1000 * 60 * 60,
+                m: 1000 * 60,
+                s: 1000
+                }
+                // (^0$)|(^-[1-9]\d*$)|(^[1-9]\d*$)
+                const TimesKey = time.match(/Y|M|D|h|m|s/)[0]
+                return new Date(new Date().getTime() + time.replace(TimesKey, '') * Times[TimesKey]).toUTCString()
+            },
+            keys () {
+                return this.trim(document.cookie.replace(/(?:^|;\s)([^=]*)(?:=[^;]*)/g, '$1 ')).split(' ')
+            },
+            hasKey (key) {
+                return !!this.keys().filter(item => item === key).length
+            },
+            trim (val) {
+                return val.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '')
+            }
+            }
+    </script>
+
+    <script type="text/javascript">
+        //接收串口信息,显示存在的串口号
+        connect_toserver.on('serials_to_web', function (data) {
+            if (data.length == 4) {
+                document.getElementById("com_num").options.add(new Option(data, data));
+            }
+        })
+
+    </script>
+    <script type="text/javascript">
+        connect_toserver.on('disconnect', function () {
+            document.getElementById('serial_open_close').value = "打开串口";
+            serial_flag = 'close';
+            $("#message").prepend('<font color="red">后台服务已关闭，请先打开服务</font>' + '<br/>');
+        })
+    </script>
+    <script type="text/javascript">  
+        (function(){  
+            function handleRequest(event){  
+                try{  
+                    var data = JSON.parse(event.data);  
+                    var storage = localStorage;   
+          
+                    if(data.op === 'W'){ //写操作  
+                        storage.setItem(data.key,JSON.stringify(data.value));  
+                        event.source.postMessage(event.data, event.origin);  
+                    }else if(data.op === 'D'){ //删除  
+                        storage.removeItem(data.key);  
+                        event.source.postMessage(event.data, event.origin);  
+                    }else if(data.op === 'X'){ //清空  
+                        storage.clear();  
+                        event.source.postMessage(event.data, event.origin);  
+                    }else{//默认：读操作  
+                        var value = JSON.parse(storage.getItem(data.key));  
+                        event.source.postMessage(JSON.stringify({id: data.id, key:data.key, value: value}), event.origin);  
+                    }  
+                }catch(e){  
+                    event.source.postMessage(event.data, event.origin);  
+                }  
+            }  
+          
+            if(window.addEventListener){  
+                window.addEventListener("message", handleRequest, false);  
+            } else if (window.attachEvent){  
+                window.attachEvent("onmessage", handleRequest);  
+            }  
+        })();  
+        
+    </script> 
+    <script> 
+
+	YYPAY.XDStorage = function(origin, path){
+	    this.origin = origin;
+	    this.path = path;
+	    this._iframe = null;
+	    this._iframeReady = false;
+	    this._queue = [];
+	    this._requests = {};
+	    this._id = 0;
+	}
+	
+	YYPAY.XDStorage.prototype = {
+	
+		op:{
+			WRITE: 'W',
+			READ: 'R',
+			DEL: 'D',
+			CLEAR: 'X'
+		},
+	    //restore constructor
+	    constructor: YYPAY.XDStorage,
+	
+	    //public interface methods
+	
+	    init: function(){
+	
+	        var that = this;
+	
+	        if (!this._iframe){
+	            if (window.postMessage && window.JSON && window.localStorage){
+	                this._iframe = document.createElement("iframe");
+	                this._iframe.style.cssText = "position:absolute;width:1px;height:1px;left:-9999px;";
+	                document.body.appendChild(this._iframe);
+	
+	                if (window.addEventListener){
+	                    this._iframe.addEventListener("load", function(){ that._iframeLoaded(); }, false);
+	                    window.addEventListener("message", function(event){ that._handleMessage(event); }, false);
+	                } else if (this._iframe.attachEvent){
+	                    this._iframe.attachEvent("onload", function(){ that._iframeLoaded(); }, false);
+	                    window.attachEvent("onmessage", function(event){ that._handleMessage(event); });
+	                }
+	            } else {
+	                throw new Error("Unsupported browser.");
+	            }
+	        }
+	
+	        this._iframe.src = this.origin + this.path;
+	
+	    },
+
+	    getValue: function(key, callback){
+	        this._toSend({
+                key: key
+            },callback);
+	    },
+	
+	    setValue: function(key,value,callback){
+
+	        this._toSend({
+                key: key,
+    			op:  this.op.WRITE,
+    			value: value
+            },callback);	
+	    },
+	    delValue: function(key,callback){
+	        this._toSend({
+                key: key,
+    			op: this.op.DEL,
+    			value: value
+            },callback);	
+	    },
+	    clearValue: function(callback){
+	        this._toSend({
+    			op: this.op.CLEAR
+            },callback);	
+	    },
+	    //private methods
+	    
+	    _toSend: function(params,callback){
+	    	var data = {
+	                request: {
+	                    key: params.key,
+	                    id: ++this._id,
+	                    op: params.op,
+	                    value: params.value
+	                },
+	                callback: callback
+            };
+	    	if (this._iframeReady){
+	            this._sendRequest(data);
+	        } else {
+	            this._queue.push(data);
+	        }   
+	
+	        if (!this._iframe){
+	            this.init();
+	        }	
+	    },
+	
+	    _sendRequest: function(data){
+	        this._requests[data.request.id] = data;
+	        this._iframe.contentWindow.postMessage(JSON.stringify(data.request), this.origin);
+	    },
+	
+	    _iframeLoaded: function(){
+	        this._iframeReady = true;
+	
+	        if (this._queue.length){
+	            for (var i=0, len=this._queue.length; i < len; i++){
+	                this._sendRequest(this._queue[i]);
+	            }
+	            this._queue = [];
+	        }
+	    },
+	
+	    _handleMessage: function(event){
+	        if (event.origin == this.origin){
+	            var data = JSON.parse(event.data);
+	            this._requests[data.id].callback && this._requests[data.id].callback(data.key, data.value);
+	            delete this._requests[data.id];
+	        }
+	    }
+	
+	};
+
+
+    </script> 
+</head>
+<body>
+    <div id="container">
+        <div id="body" class="center-block" style="margin:0px 16px;max-width:1050px;">
+            <div class="page-header" style="margin: 0px 0 20px;">
+                <h1>
+                    <small style="color:#333;">串口配置工具</small>
+                </h1>
+            </div>
+            
+            <div class="panel panel-default">
+                <div class="panel-heading">串口配置</div>
+                <div class="panel-body">
+                    <div id="option">
+                        <table class="table">
+                            <tr>
+                                <td width="20%">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">串口号</span>
+                                        <select class="form-control " id="com_num" data-size="5">
+                    
+                                        </select>
+                                    </div>
+                                </td>
+                                <td width="20%">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">波特率</span>
+                                        <select class="form-control" id="baudrate">
+                                            <option value="115200">115200</option>
+                                            <option value="57600">57600</option>
+                                            <option value="38400">38400</option>
+                                            <option value="19200">19200</option>
+                                            <option selected value="9600">9600</option>
+                                            <option value="4800">4800</option>
+                                            <option value="2400">2400</option>
+                                            <option value="1800">1800</option>
+                                            <option value="1200">1200</option>
+                                            <option value="600">600</option>
+                                            <option value="300">300</option>
+                                            <option value="200">200</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td width="15%">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">数据位</span>
+                                        <select class="form-control" id="databits">
+                                            <option value="8">8</option>
+                                            <option value="7">7</option>
+                                            <option value="6">6</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td width="15%">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">停止位</span>
+                                        <select class="form-control" id="stopbits">
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td width="20%">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">校验位</span>
+                                        <select class="form-control" id="parity">
+                                            <option value="none">None</option>
+                                            <option value="even">Even</option>
+                                            <option value="mark">Mark</option>
+                                            <option value="odd">Odd</option>
+                                            <option value="space">Space</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td width="10%">
+                                    <div id="serial_status">
+                                        <input type="button" id="serial_open_close" class="btn btn-primary center-block" value="打开串口" onclick="bnt_change(this)"
+                                        />
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+					<div id="ser_setting">
+						<table id="setting" class="table">
+							<tr>
+								<td width="40%">
+									<div class="input-group">
+										<span class="input-group-addon">接收设置</span>
+										<select class="form-control" id="rec_setting">
+											<option value="hex">HEX</option>
+											<option value="ascii">ASCII</option>
+											<option value="gb2312" selected>GB2312</option>
+										</select>
+									</div>
+								</td>
+								<td width="50%">
+									<div class="input-group">
+										<span class="input-group-addon">发送设置</span>
+										<select class="form-control" id="send_setting">
+											<option value="hex">HEX</option>
+											<option value="ascii">ASCII</option>
+											<option value="utf8">UTF8</option>
+										</select>
+									</div>
+								</td>
+								<td width="10%">
+									<button id="set_change" class="btn btn-primary center-block">确认更改</button>
+								</td>
+							</tr>
+						</table>
+					</div>
+                    <div id="send">
+                        <table class="table">
+                            <tr>
+                                <td width="40%">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">发送指令</span>
+                                        <input type="text" id="command" class="form-control" value="AT" />
+                                    </div>
+                                </td>
+                                <td width="15%">
+                                    <div id="auto_send_form">
+                                        <div class="input-group ">
+                                            <span class="input-group-addon">定时发送</span>
+                                            <select class="form-control" id="auto_send">
+                                                <option value="auto_send_no">否</option>
+                                                <option value="auto_send_yes">是</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td width="35%">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">间隔时间</span>
+                                        <input type="number" id="auto_time" class="form-control" step="100" min="100" placeholder="ms" />
+                                    </div>
+                                </td>
+                                <td width="10%">
+                                    <div id="button">
+                                        <button id="btn_start" class="btn btn-success center-block">发送指令</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <input type="number" id="inpOne" class="form-control"  style="width:300px;margin:10rpx 0;"/>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    接收数据 
+                    <input type="button" id="clear" class="btn btn-danger btn-xs center-block" value="清除窗口" onclick="clear_window()" style="float: right;"/>
+                </div>
+                
+                <div class="panel-body">
+                    <div id="message"></div>
+                </div>
+            </div>
+            <!-- <iframe src="http://localhost:8079/#/login" frameborder="0"></iframe> -->
+
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+Windows Registry Editor Version 5.00
+[HKEY_CLASSES_ROOT\ChiticData]
+"URL Protocol"="d:\\comTest\\Balance.exe"
+@="ChiticData"
+[HKEY_CLASSES_ROOT\ChiticData\DefaultIcon]
+@="d:\\comTest\\Balance.exe,1"
+[HKEY_CLASSES_ROOT\ChiticData\shell]
+[HKEY_CLASSES_ROOT\ChiticData\shell\open]
+[HKEY_CLASSES_ROOT\ChiticData\shell\open\command]
+@="\"D:\\comTest\\Balance.exe\" \"%1\""
