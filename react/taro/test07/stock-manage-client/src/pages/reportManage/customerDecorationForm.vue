@@ -1,0 +1,457 @@
+<template>
+  <div class="conBigDiv" v-loading="loading">
+    <el-breadcrumb separator-class="el-icon-arrow-right" class="topnav">
+      <el-breadcrumb-item>尚金缘内部业务管理系统</el-breadcrumb-item>
+      <el-breadcrumb-item>报表管理</el-breadcrumb-item>
+      <el-breadcrumb-item>客户存饰表</el-breadcrumb-item>
+    </el-breadcrumb>
+    <div>
+      <div class="hr" />
+      <el-row>
+        <el-col :span="24">
+          <div>
+            <span class="gray_font">客户名称</span>
+            <el-select
+              v-model="companyName"
+              filterable
+              remote
+              reserve-keyword
+              placeholder="请输入客户"
+              :remote-method="remoteMethod"
+              @keydown.native="customeSelect($event)"
+              @change="changCustomer"
+              :loading="searchloading"
+              size="small"
+              class="width240"
+            >
+              <el-option
+                v-for="item in customerData"
+                :key="item.companyName"
+                :label="item.companyName"
+                :value="item.companyName"
+              ></el-option>
+            </el-select>
+
+            <span class="gray_font marignLeft8">所属区域</span>
+            <el-select v-model="area" placeholder="请选择" size="small">
+              <el-option v-for="item in areaData" :key="item" :label="item" :value="item"></el-option>
+            </el-select>
+            <span class="gray_font marignLeft8">所属省份</span>
+            <el-select v-model="province" placeholder="请选择" size="small">
+              <el-option
+                v-for="item in provinceData"
+                :key="item.id"
+                :label="item.label"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+            <span class="gray_font marignLeft8">起止时间</span>
+            <el-date-picker
+              v-model="selectedDay"
+              @change="selectDayFun"
+              type="daterange"
+              align="right"
+              unlink-panels
+              size="small"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :picker-options="$publicData.pickerOptions2"
+              style="width: 250px;"
+            ></el-date-picker>
+          </div>
+        </el-col>
+      </el-row>
+      <el-row style="margin-top: 24px;margin-bottom: 12px;">
+        <el-col :span="12">
+          <el-button type="danger" size="small" plain @click="searchFun">查询</el-button>
+          <el-button type="danger" size="small" @click="resetFun">重置</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            @click="exportFun(addrA,'存饰表')"
+            :loading="exportLoading"
+          >导出存饰表</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            @click="exportFun(addrB,'日结存饰表')"
+            :loading="exportLoading"
+          >导出日结存饰表</el-button>
+        </el-col>
+        <el-col :span="12" class="totalDes">
+          <!-- <span>总计：来款总金额￥36598544.36</span> -->
+        </el-col>
+      </el-row>
+      <el-table
+        :data="listData"
+        :summary-method="getSummaries"
+        show-summary
+        height="640"
+        style="width: 100%; margin-top: 20px"
+        :cell-style="{'vertical-align':'top'}"
+      >
+        <el-table-column prop="area" label="区域"></el-table-column>
+        <el-table-column prop="province" label="省份"></el-table-column>
+        <el-table-column prop="financeCode" label="财务编码"></el-table-column>
+        <el-table-column prop="customerName" label="客户名称"></el-table-column>
+        <el-table-column prop="createTime" label="日期">
+          <template slot-scope="scope">
+            <span>{{$api.dateGetDay(scope.row.createTime)}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="bizNo" label="拣货单号"></el-table-column>
+        <el-table-column label="包号">
+          <template slot-scope="scope">
+            <div
+              v-for="(item,index) in scope.row.temporaryJewelryProps"
+              :key="index"
+            >{{item.sourceBaoCode}}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="重量(g)" prop="weightTotal">
+          <template slot-scope="scope">
+            <div
+              v-for="(item,index) in scope.row.temporaryJewelryProps"
+              :key="index"
+            >{{item.weight}}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="数量" width="100" prop="numberTotal">
+          <template slot-scope="scope">
+            <div
+              v-for="(item,index) in scope.row.temporaryJewelryProps"
+              :key="index"
+            >{{item.amount}}</div>
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- <a ref="xlsDownloadA"></a> -->
+      <div class="pageD">
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="pageNum"
+          :page-sizes="[12, 30, 50, 100]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="priceSum"
+          background
+        ></el-pagination>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      addrA: `/biz/temporary/getJewelrylistExcel`,
+      addrB: `/biz/temporary/getJewelryByDateExcel`,
+      listData: [],
+      exportLoading: false, //导出按钮状态
+      loading: false,
+      searchloading: false,
+      companyName: "", //客户名称
+      customerData: [], //客户名称数据
+      search: "",
+      startTime: "",
+      endTime: "",
+      area: "全部",
+      province: "",
+      provinceData: [], //省份数据
+      areaData: [], //所属区域数据
+      dialogTableVisible: false, //金料单弹出框
+      selectedDay: "", //日期选择属性
+      documentState: "", //单据状态
+      pageNum: 1, //默认第一页
+      pageSize: 12, //每页显示条目个数
+      priceSum: 0 //总条目数
+    };
+  },
+  created() {
+    this.provinceData = this.$publicData.provinceData;
+    this.getAreaData();
+    this.displayAllData();
+  },
+  methods: {
+    displayAllData() {
+      this.loading = true;
+      var self = this;
+      let params = {
+        PRS: {
+          search: self.companyName,
+          startTime: self.startTime,
+          endTime: self.endTime,
+          area: self.area == "全部" ? "" : self.area,
+          province: self.province,
+          page: self.pageNum,
+          rows: self.pageSize
+        }
+      };
+
+      this.$axios
+        .get(this.$portMain + "/biz/temporary/getJewelrylist", params)
+        .then(function(res) {
+          if (res.data.code == 200) {
+            self.listData = res.data.data.data;
+            self.priceSum = res.data.data.rowSize;
+            self.listData.forEach(item => {
+              let weightTotal = 0,
+                numberTotal = 0;
+              item.temporaryJewelryProps.forEach(it => {
+                weightTotal += it.weight;
+                numberTotal += it.amount;
+              });
+
+              item.weightTotal = weightTotal;
+              item.numberTotal = numberTotal;
+            });
+
+            console.log("数据11", self.listData);
+          } else {
+            self.$message.error(res.data.msg);
+            self.listData = [];
+          }
+          self.loading = false;
+        })
+        .catch(() => (self.loading = false));
+    },
+    //分页事件开始
+    handleSizeChange(val) {
+      this.pageSize = val;
+      this.pageNum = 1;
+      this.displayAllData();
+    },
+    handleCurrentChange(val) {
+      this.pageNum = val; //默认第一页
+      this.displayAllData();
+    },
+    // 选择时间
+    selectDayFun() {
+      let self = this;
+      if (self.selectedDay != null) {
+        this.startTime = this.$api.dateGetDayTime(self.selectedDay[0]);
+        this.endTime = this.$api.dateGetDayTime(self.selectedDay[1]);
+      } else {
+        this.startTime = "";
+        this.endTime = "";
+      }
+      this.displayAllData();
+    },
+    //获取区域数据
+    getAreaData() {
+      //areaData
+      let self = this;
+      let params = {};
+      this.$axios
+        .post(this.$portMain + "/client/clientArea", params)
+        .then(function(res) {
+          if (res.data.code == 200) {
+            self.areaData = res.data.data;
+            self.areaData.unshift("全部");
+          } else {
+            // self.$message.error(res.data.msg);
+          }
+        });
+    },
+    // 下拉搜索
+    remoteMethod(query) {
+      let self = this;
+      if (query !== "") {
+        self.searchloading = true;
+        let params = {
+          PRS: {
+            clientScope: "_FACTORY",
+            keyWord: query
+          }
+        };
+        self.$axios
+          .get(self.$portMain + "/client/rawClientSimple", params)
+          .then(function(res) {
+            if (res.data.code == 200) {
+              self.customerData = res.data.data;
+              self.searchloading = false;
+            } else {
+              self.$message.error(res.data.msg);
+            }
+          });
+      } else {
+        self.customerData = [];
+      }
+    },
+    //客户删除
+    customeSelect(e) {
+      if (e.keyCode == 8) {
+        this.companyName = "";
+        this.customerData = [];
+      }
+    },
+    //选择客户
+    changCustomer(val) {
+      // this.search = val;
+    },
+    //导出存饰表
+    exportFun(urlAddr, FileName) {
+      let self = this;
+      let params = {
+        PRS: {
+          search: this.companyName,
+          startTime: this.startTime,
+          endTime: this.endTime,
+          area: this.area == "全部" ? "" : this.area,
+          province: this.province
+        }
+      };
+      this.exportLoading = true;
+      this.$axios
+        .get(`${this.$portMain}${urlAddr}`, params)
+        .then(function(res) {
+          if (res.data.code == 200) {
+            let baseFile = `data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,${res.data.data}`;
+            self.fname = `${FileName}.${
+              self.$publicData.base61File[self.$api.getContentType(baseFile)]
+            }`;
+            let blob = self.$api.getBlob(baseFile);
+            let xlsDownloadA = document.createElement("a");
+            xlsDownloadA.download = self.fname;
+            xlsDownloadA.href = URL.createObjectURL(blob);
+            xlsDownloadA.click();
+            self.exportLoading = false;
+          } else {
+            self.$message.error(res.msg);
+            self.exportLoading = false;
+          }
+        });
+    },
+    searchFun() {
+      this.pageNum = 1; //默认第一页
+      this.pageSize = 12; //每页显示条目个数
+      this.displayAllData();
+    },
+    resetFun() {
+      this.search = "";
+      this.startTime = "";
+      this.endTime = "";
+      this.province = "";
+      this.area = "全部";
+      this.selectedDay = "";
+      this.companyName = "";
+      this.customerData = [];
+      this.searchFun();
+    },
+    //表格底部数据统计
+    getSummaries(param) {
+      const { columns, data } = param;
+      const sums = [];
+      columns.forEach((column, index) => {
+        if (index === 0) {
+          sums[index] = "";
+          return;
+        }
+        if (column.label === "重量(g)" || column.label === "数量") {
+          const values = data.map(item => Number(item[column.property]));
+          if (!values.every(value => isNaN(value))) {
+            sums[index] = values.reduce((prev, curr) => {
+              const value = Number(curr);
+              if (!isNaN(value)) {
+                let res = (Number(prev) + Number(curr)).toFixed(2);
+                return res;
+              } else {
+                return prev;
+              }
+            }, 0);
+            sums[index] += "";
+          } else {
+            sums[index] = "";
+          }
+        }
+      });
+      return sums;
+    }
+  }
+};
+</script>
+
+<style scoped lang="stylus" rel="stylesheet/stylus">
+$base-color = rgb(230, 14, 50);
+$font-color = #999;
+
+.conBigDiv {
+  .rgb196 {
+    background: red;
+  }
+
+  .title {
+    border-bottom: 1px solid #d9d9d9;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+  }
+
+  .hr {
+    border-top: 1px solid #d9d9d9;
+    height: 3px;
+    margin: 12px 0 12px 0;
+  }
+
+  .redfont {
+    margin-bottom: 15px;
+    padding-left: 10px;
+    border-left: 3px solid #e60e32;
+    font-size: 15px;
+  }
+
+  .red_font {
+    color: $base-color;
+  }
+
+  .searchTxt {
+    width: 320px;
+  }
+
+  .gray_font {
+    color: $font-color;
+    font-size: 12px;
+  }
+
+  .marignLeft8 {
+    margin-left: 24px;
+  }
+
+  .pageD {
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  .returnColor {
+    color: #F20F34;
+  }
+
+  .passColor {
+    color: #222426;
+  }
+
+  .awaitColor {
+    color: #F26D0F;
+  }
+
+  .draftColor {
+    color: #F2B90F;
+  }
+
+  .cancelColor {
+    color: #8A9199;
+  }
+
+  .totalDes {
+    color: #F20F34;
+    font-size: 14px;
+    text-align: right;
+
+    span {
+      display: inline-block;
+      margin-right: 24px;
+    }
+  }
+}
+</style>

@@ -1,0 +1,342 @@
+/**
+ * Eric Meyer's Reset CSS v2.0 (http://meyerweb.com/eric/tools/css/reset/)
+ * http://cssreset.com
+ */
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video,
+input {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font-weight: normal;
+    vertical-align: baseline;
+}
+
+
+/* HTML5 display-role reset for older browsers */
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+menu,
+nav,
+section {
+    display: block;
+}
+
+body {
+    line-height: 1;
+}
+
+blockquote,
+q {
+    quotes: none;
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+    content: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+
+/* custom */
+
+a {
+    color: #7e8c8d;
+    text-decoration: none;
+    -webkit-backface-visibility: hidden;
+}
+
+li {
+    list-style: none;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-track-piece {
+    background-color: rgba(0, 0, 0, 0.2);
+    -webkit-border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:vertical {
+    height: 5px;
+    background-color: rgba(125, 125, 125, 0.7);
+    -webkit-border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+    width: 5px;
+    background-color: rgba(125, 125, 125, 0.7);
+    -webkit-border-radius: 6px;
+}
+
+html,
+body {
+    width: 100%;
+}
+
+body {
+    -webkit-text-size-adjust: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+textarea {
+    -webkit-appearance: none;
+}
+
+input,
+button,
+select,
+textarea {
+    outline: none
+}
+
+input[type="text"] {
+    -webkit-appearance: none;
+}
+
+.width256 {
+    width: 256px;
+}
+
+.txt12 {
+    font-size: 12px;
+}
+
+.txt14 {
+    font-size: 14px;
+}
+
+.txt16 {
+    font-size: 16px;
+}
+
+.txt18 {
+    font-size: 18px;
+}
+
+.txtLeft {
+    text-align: left
+}
+
+.txtRight {
+    text-align: right;
+}
+
+.txtRed {
+    color: #F20F34
+}
+
+.txtBold {
+    font-weight: bold
+}
+
+.floatRight {
+    float: right
+}
+
+.floatLeft {
+    float: left;
+}
+
+.txtYellow {
+    color: #F2930F
+}
+
+.txtOrange {
+    color: #F26D0F
+}
+
+.txtHui {
+    color: #8A9199
+}
+
+.txtBlack {
+    color: #232426
+}
+
+.lineHeight34 {
+    line-height: 34px;
+}
+
+.width70 {
+    width: 70px
+}
+
+.width80 {
+    width: 80px
+}
+
+.width90 {
+    width: 90px;
+}
+
+.width100 {
+    width: 100px;
+}
+
+.width110 {
+    width: 110px
+}
+
+.top10 {
+    padding: 10px 0;
+}
+
+.top20 {
+    padding: 20px 0;
+}
+
+.overflowHidden {
+    overflow: hidden;
+    white-space: nowrap
+}
+
+.pointer {
+    cursor: pointer
+}
+
+
+.bigLine {
+    height: 11px;
+    background: #e6ebf5;
+    margin-left: -15px;
+    width: calc(100% + 30px);
+    margin-top: -1px;
+}
+
+.left10 {
+    margin-left: 10px
+}
+
+.left20 {
+    margin-left: 20px
+}
+
+.right10 {
+    margin-right: 10px
+}
+
+.right20 {
+    margin-right: 20px
+}
+
+.right30 {
+    margin-right: 30px
+}
+
+.right40 {
+    margin-right: 40px
+}
+
+.marginTop10 {
+    margin-top: 10px;
+}
+
+.marginTop20 {
+    margin-top: 20px;
+}
+
+.hr {
+    border-top: 1px solid #d9d9d9;
+    height: 3px;
+    margin: 12px 0 12px 0;
+}
+
+.fontW600 {
+    font-weight: 600;
+}

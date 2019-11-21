@@ -1,0 +1,10 @@
+[0607/160058.549:ERROR:process_reader_win.cc(123)] NtOpenThread: {无法访问} 过程已请求访问一对象，但未给访问权限。 (0xc0000022)
+[0607/160058.459:ERROR:process_reader_win.cc(123)] NtOpenThread: {无法访问} 过程已请求访问一对象，但未给访问权限。 (0xc0000022)
+[0607/160058.449:ERROR:process_reader_win.cc(123)] NtOpenThread: {无法访问} 过程已请求访问一对象，但未给访问权限。 (0xc0000022)
+[0607/160058.609:ERROR:exception_snapshot_win.cc(88)] thread ID 13128 not found in process
+[0607/160058.609:ERROR:exception_snapshot_win.cc(88)] thread ID 10260 not found in process
+[0607/160058.609:ERROR:exception_snapshot_win.cc(88)] thread ID 312 not found in process
+[0607/160058.609:WARNING:crash_report_exception_handler.cc(62)] ProcessSnapshotWin::Initialize failed
+[0607/160058.609:WARNING:crash_report_exception_handler.cc(62)] ProcessSnapshotWin::Initialize failed
+[0607/160058.609:WARNING:crash_report_exception_handler.cc(62)] ProcessSnapshotWin::Initialize failed
+[0325/144720.360:ERROR:crash_report_database_win.cc(428)] unexpected header
